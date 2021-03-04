@@ -28,6 +28,7 @@ def create_sms_binding(identity, address, *tags):
 
 def add_binding_tags(binding_sid, *tags):
     """Fetches a binding and recreates it with additional tags."""
+
     binding = client.notify.services(notify_service) \
                     .bindings(binding_sid).fetch()
     new_tags = [*binding.tags, *tags]
@@ -38,13 +39,15 @@ def add_binding_tags(binding_sid, *tags):
                         address=binding.address,
                         tag=new_tags
                     )
+    return new_binding
 
 def remove_binding_tags(binding_sid, *tags):
     """Fetches a binding and recreates it, removing tags."""
+
     binding = client.notify.services(notify_service) \
                     .bindings(binding_sid).fetch()
-    # TODO: Remove tags from the list
-    new_tags = new_tags
+    remove_tags = [*tags]
+    new_tags = [i for i in binding.tags if i not in remove_tags]
     new_binding = client.notify.services(notify_service) \
                     .bindings.create(
                         identity=binding.identity,
@@ -52,6 +55,14 @@ def remove_binding_tags(binding_sid, *tags):
                         address=binding.address,
                         tag=new_tags
                     )
+    return new_binding
+
+def delete_binding(binding_sid):
+    """Deletes a binding from the system."""
+
+    binding = client.notify.services(notify_service) \
+                    .bindings(binding_sid).delete()
+    return binding
 
 def send_notification(tag, body):
     """Sends the provided notification body to all addresses with the provided tag."""
