@@ -5,6 +5,7 @@
 import os
 from dotenv import load_dotenv
 from twilio.rest import Client
+import json
 
 load_dotenv()
 
@@ -13,6 +14,27 @@ notify_key = os.environ['NOTIFY_KEY']
 notify_secret = os.environ['NOTIFY_SECRET']
 notify_service = os.environ['NOTIFY_SERVICE']
 client = Client(notify_key, notify_secret)
+
+binding_keys = ["sid"]
+
+
+def get_bindings():
+    """Gets a current list of bindings"""
+
+    bindings_list = client.notify.services(notify_service) \
+                          .bindings.list(limit=50)
+    
+    converted_list = []
+
+    for item in bindings_list:
+        binding = {}
+        binding['sid'] = item.sid
+        binding['binding_type'] = item.binding_type
+        binding['identity'] = item.identity
+        binding['address'] = item.address
+        binding['tags'] = item.tags
+        converted_list.append(binding)
+    return converted_list
 
 def create_sms_binding(identity, address, *tags):
     """Creates an SMS binding with the given identity, address, and tags."""

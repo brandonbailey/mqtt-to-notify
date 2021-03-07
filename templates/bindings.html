@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Bindings{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <table class="border-collapse border border-black table-auto">
+        <tr><th class="p-1 border border-black">Identity</th><th class="p-1 border border-black">Type</th><th class="p-1 border border-black">Address</th><th class="p-1 border border-black">Tags</th><th class="p-1 border border-black"></th></tr>
+        {% for binding in binding_list %}
+        <tr><td class="p-1 border border-black">{{ binding.identity }}</td><td class="p-1 border border-black">{{ binding.binding_type }}</td><td class="p-1 border border-black">{{ binding.address }}</td><td class="p-1 border border-black">
+            {% for tag in binding.tags %}
+            <div class="rounded-full bg-gray-300 px-2 py-0 inline-block">{{ tag }}</div>
+            {% endfor %}
+        </td><td class="p-1 border border-black"><i class="far fa-edit"></i> <i class="far fa-trash"></i></td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}
